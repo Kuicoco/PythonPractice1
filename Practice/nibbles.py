@@ -6,18 +6,26 @@ import random
 pygame.init()
 pygame.font.init()
 
+#colours
+white = (255, 255, 255)
+yellow = (255, 255, 102)
+black = (0, 0, 0)
+red = (213, 50, 80)
+green = (0, 255, 0)
+blue = (50, 153, 213)
+
 
 
 #define variables
 screentype = 1 #1 = start screen, 2 = game screen, 3 =  end screen
 
-screen_width = 700
-screen_height = 700
+screen_width = 600
+screen_height = 400
 
 worm_x = [350,330,310,290]
 worm_y = [350,350,350,350]
 
-wormblocksize = 20;
+wormblocksize = 10;
 
 up = False;
 down = False;
@@ -40,11 +48,11 @@ def writetext(text, x, y, color=(0,0,0), fontsize=24):
 def drawworm(wrm_x, wrm_y):
     for i in range(len(worm_x)):
         #draw worm shadow
-        pygame.draw.circle(screen, (77, 0, 77), (worm_x[i]-1, worm_y[i]+2), 15)
+        pygame.draw.circle(screen, (77, 0, 77), (worm_x[i]-1, worm_y[i]+2), 10)
 
     for i in range(len(worm_x)):
         #draw worm body
-        pygame.draw.circle(screen, (232, 176, 81), (worm_x[i], worm_y[i]), 15)
+        pygame.draw.circle(screen, (232, 176, 81), (worm_x[i], worm_y[i]), 10)
 
 #get random location
 def getrandomlocation(screenwidth, screenheight):
@@ -56,6 +64,11 @@ def getrandomlocation(screenwidth, screenheight):
 
 #get first apple random location
 apple_x, apple_y = getrandomlocation(screen_width, screen_height)
+
+'''
+apple_x = round(random.randrange(0, screen_width - snake_block) / 10.0) * 10.0
+apple_y = round(random.randrange(0, screen_height - snake_block) / 10.0) * 10.0
+'''
 
 #initialize the main game loop
 running = True
@@ -114,8 +127,12 @@ while running:
                         right, left, up = False, False, False     
     
         #draw a red circle
-        apple = pygame.draw.circle(screen, (247, 86, 74), (apple_x, apple_y), 15)
+        apple = pygame.draw.circle(screen, (247, 86, 74), (apple_x, apple_y), 10)
         drawworm(worm_x, worm_y)
+
+        #applecollision
+        if (worm_x[0] == apple_x and worm_y[0] == apple_y):
+            screentype = 3
 
         #move worm in direction
         if(right):
@@ -142,10 +159,14 @@ while running:
             worm_y.insert(0, worm_y[0] - wormblocksize)
             worm_y.pop()
 
+       
+        
 
         #boundaries
         if (worm_x[0] < 0) or (worm_x[0] > screen_width) or (worm_y[0] < 0) or (worm_y[0] > screen_height):
             screentype = 3
+        
+        
 
     #end screen
     if screentype == 3:
